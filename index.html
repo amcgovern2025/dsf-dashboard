@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirigo Sea Farm Cost Dashboard</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.8.0/umd/Recharts.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } = Recharts;
+
+        const CostDashboard = () => {
+          const [seaweedPrice, setSeaweedPrice] = useState(8.00);
+          const [alginateYield, setAlginateYield] = useState(12);
+          const [ethanolRecovery, setEthanolRecovery] = useState(0);
+
+          // Base constants
+          const baseEthanolPrice = 71.98;
+          const baseKelpQuantity = 6;
+          const sodiumBicarbPrice = 1.00;
+          const sodiumBicarbQuantity = 1.98;
+          const ethanolQuantity = 0.462301;
+          const glycerolPrice = 1.03;
+          const glycerolUtilization = 0.6;
+
+          // Calculations
+          const effectiveEthanolPrice = baseEthanolPrice * (1 - ethanolRecovery / 100);
+          const ethanolCost = ethanolQuantity * effectiveEthanolPrice;
+          const kelpCost = baseKelpQuantity * seaweedPrice;
+          const sodiumBicarbCost = sodiumBicarbQuantity * sodiumBicarbPrice;
+          const alginateLbs = baseKelpQuantity * (alginateYield / 100);
+          const totalRawMaterialCost = kelpCost + sodiumBicarbCost + ethanolCost;
+          const sodiumAlginatePerLb = totalRawMaterialCost / alginateLbs;
+          const sodiumAlginatePerKg = sodiumAlginatePerLb * 2.20462;
+          const glycerolCost = glycerolUtilization * glycerolPrice;
+          const sodiumAlginateForFilm = 0.4 * sodiumAlginatePerKg;
+          const filmCostPerKg = glycerolCost + sodiumAlginateForFilm;
+          const filmCostPerLb = filmCostPerKg / 2.20462;
+
+          const costBreakdownData = [
+            { name: 'Kelp', cost: kelpCost, baseline: 48.00 },
+            { name: 'Sodium Bicarb', cost: sodiumBicarbCost, baseline: 1.98 },
+            { name: 'Ethanol', cost: ethanolCost, baseline: 33.28 }
+          ];
+
+          const outputData = [
+            { name: 'Sodium Alginate ($/Kg)', current: sodiumAlginatePerKg, baseline: 254.93, tar
