@@ -117,6 +117,91 @@
 
 
         <!-- Key Metrics -->
+        <!-- Resin Price & Microalgae Blend -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+  <!-- Resin Price Slider -->
+  <div class="bg-green-50 border-2 border-green-200 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">🧪 Target Resin Price</h3>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Target Resin Price: $<span id="resinPriceValue">2.75</span>/lb
+      </label>
+      <input type="range" id="resinPrice" class="slider" min="0.50" max="10" step="0.05" value="2.75">
+      <div class="flex justify-between text-xs text-gray-500 mt-1">
+        <span>$0.50</span>
+        <span>$10.00</span>
+      </div>
+    </div>
+    <p class="text-sm text-gray-600">
+      Adjust this to simulate your target selling price for finished resin.
+    </p>
+  </div>
+
+  <!-- Microalgae Cost Slider -->
+  <div class="bg-green-50 border-2 border-green-200 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">🧬 Microalgae Cost</h3>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Microalgae Cost: $<span id="microCostValue">1.00</span>/lb
+      </label>
+      <input type="range" id="microCost" class="slider" min="0.10" max="10" step="0.05" value="1.00">
+      <div class="flex justify-between text-xs text-gray-500 mt-1">
+        <span>$0.10</span>
+        <span>$10.00</span>
+      </div>
+    </div>
+    <p class="text-sm text-gray-600">
+      Lower costs unlock higher seaweed usage in your resin blend.
+    </p>
+  </div>
+</div>
+
+<!-- Blend Ratio Output -->
+<div class="bg-white border border-green-200 rounded-lg p-6 mb-8">
+  <h3 class="text-lg font-semibold text-gray-900 mb-4">🥣 Required Blend Ratio</h3>
+  <div id="blendOutput" class="text-md text-gray-800">
+    <!-- JS will populate -->
+  </div>
+</div>
+
+<script>
+  const resinSlider = document.getElementById('resinPrice');
+  const microSlider = document.getElementById('microCost');
+  const resinLabel = document.getElementById('resinPriceValue');
+  const microLabel = document.getElementById('microCostValue');
+  const blendOutput = document.getElementById('blendOutput');
+
+  const seaweedCost = 14.13;
+
+  function updateBlendCalc() {
+    const resinTarget = parseFloat(resinSlider.value);
+    const microCost = parseFloat(microSlider.value);
+    const maxInputBlendCost = resinTarget * 0.80; // 20% yield loss
+
+    resinLabel.textContent = resinTarget.toFixed(2);
+    microLabel.textContent = microCost.toFixed(2);
+
+    const x = (maxInputBlendCost - microCost) / (seaweedCost - microCost);
+
+    if (x < 0 || x > 1 || isNaN(x)) {
+      blendOutput.innerHTML = `<p class="text-red-600 font-semibold">⚠️ At $${microCost.toFixed(2)}/lb microalgae, it’s <u>not possible</u> to reach a resin cost of $${resinTarget.toFixed(2)}/lb.</p>`;
+    } else {
+      const macro = (x * 100).toFixed(1);
+      const micro = ((1 - x) * 100).toFixed(1);
+      blendOutput.innerHTML = `
+        <p class="text-green-700">To reach <strong>$${resinTarget.toFixed(2)}/lb</strong> resin cost:</p>
+        <ul class="list-disc pl-6 mt-2">
+          <li><strong>${macro}%</strong> Macroalgae (Sodium Alginate)</li>
+          <li><strong>${micro}%</strong> Microalgae Polysaccharide</li>
+        </ul>
+      `;
+    }
+  }
+
+  resinSlider.addEventListener('input', updateBlendCalc);
+  microSlider.addEventListener('input', updateBlendCalc);
+  updateBlendCalc();
+</script>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h3 class="text-xl font-semibold text-gray-900 mb-4">💰 Sodium Alginate Cost</h3>
