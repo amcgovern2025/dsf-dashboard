@@ -172,43 +172,6 @@
   </div>
 </div>
 
-<script>
-  const resinSlider = document.getElementById('resinPrice');
-  const microSlider = document.getElementById('microCost');
-  const resinLabel = document.getElementById('resinPriceValue');
-  const microLabel = document.getElementById('microCostValue');
-  const blendOutput = document.getElementById('blendOutput');
-
-  const seaweedCost = 14.13;
-
-  function updateBlendCalc() {
-    const resinTarget = parseFloat(resinSlider.value);
-    const microCost = parseFloat(microSlider.value);
-    const maxInputBlendCost = resinTarget * 0.80; // 20% yield loss
-
-    resinLabel.textContent = resinTarget.toFixed(2);
-    microLabel.textContent = microCost.toFixed(2);
-
-    const x = (maxInputBlendCost - microCost) / (seaweedCost - microCost);
-
-    if (x < 0 || x > 1 || isNaN(x)) {
-      blendOutput.innerHTML = `<p class="text-red-600 font-semibold">⚠️ At $${microCost.toFixed(2)}/lb microalgae, it’s <u>not possible</u> to reach a resin cost of $${resinTarget.toFixed(2)}/lb.</p>`;
-    } else {
-      const macro = (x * 100).toFixed(1);
-      const micro = ((1 - x) * 100).toFixed(1);
-      blendOutput.innerHTML = `
-        <p class="text-green-700">To reach <strong>$${resinTarget.toFixed(2)}/lb</strong> resin cost:</p>
-        <ul class="list-disc pl-6 mt-2">
-          <li><strong>${macro}%</strong> Macroalgae (Sodium Alginate)</li>
-          <li><strong>${micro}%</strong> Microalgae Polysaccharide</li>
-        </ul>
-      `;
-    }
-  }
-
-  resinSlider.addEventListener('input', updateBlendCalc);
-  microSlider.addEventListener('input', updateBlendCalc);
-  updateBlendCalc();
 </script>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-lg shadow-md p-6">
@@ -295,7 +258,6 @@
     <script>
         // Base constants
         const baseEthanolPrice = 71.98;
-const seaweedQuantity = parseFloat(document.getElementById('seaweedQuantity').value);
         const sodiumBicarbPrice = 1.00;
         const sodiumBicarbQuantity = 1.98;
         const ethanolQuantity = 0.462301;
@@ -306,13 +268,10 @@ const seaweedQuantity = parseFloat(document.getElementById('seaweedQuantity').va
     const seaweedPrice = parseFloat(document.getElementById('seaweedPrice').value);
     const alginateYield = parseFloat(document.getElementById('alginateYield').value);
     const ethanolRecovery = parseFloat(document.getElementById('ethanolRecovery').value);
-    const seaweedQuantity = parseFloat(document.getElementById('seaweedQuantity').value);
 
     document.getElementById('seaweedPriceValue').textContent = seaweedPrice.toFixed(2);
     document.getElementById('alginateYieldValue').textContent = alginateYield;
     document.getElementById('ethanolRecoveryValue').textContent = ethanolRecovery;
-    document.getElementById('seaweedQuantityValue').textContent = seaweedQuantity;
-
 
             // Calculate costs
             const effectiveEthanolPrice = baseEthanolPrice * (1 - ethanolRecovery / 100);
@@ -367,8 +326,6 @@ const seaweedQuantity = parseFloat(document.getElementById('seaweedQuantity').va
         document.getElementById('seaweedPrice').addEventListener('input', calculateCosts);
         document.getElementById('alginateYield').addEventListener('input', calculateCosts);
         document.getElementById('ethanolRecovery').addEventListener('input', calculateCosts);
-        document.getElementById('seaweedQuantity').addEventListener('input', calculateCosts);
-
         // Initial calculation
         calculateCosts();
         // === Blend Composition Logic ===
