@@ -1,378 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dirigo Sea Farm Cost Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            background: #fbbf24;
-            outline: none;
-        }
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #059669;
-            cursor: pointer;
-        }
-        .slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #059669;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dirigo Sea Farm Cost Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      background: #fbbf24;
+      outline: none;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #059669;
+      cursor: pointer;
+    }
+    .slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #059669;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body class="bg-gray-50">
-    <div class="p-6 max-w-7xl mx-auto min-h-screen">
-        <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Dirigo Sea Farm Cost Analysis Dashboard</h1>
-            <p class="text-gray-600">Adjust the key levers to optimize COGs</p>
-        </div>
-
-        <!-- Control Panel -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <!-- Seaweed Price -->
-            <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">🌿 Seaweed Price</h3>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Price per Lb: $<span id="seaweedPriceValue">8.00</span>
-                    </label>
-                    <input type="range" id="seaweedPrice" class="slider" min="2" max="15" step="0.25" value="8">
-                    <div class="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>$2.00</span>
-                        <span>$15.00</span>
-                    </div>
-                </div>
-                <div class="text-sm text-gray-600">
-                    Current cost: $<span id="kelpCost">48.00</span>
-                </div>
-            </div>
-
-            <!-- Alginate Yield -->
-            <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">⚗️ Alginate Yield</h3>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Yield: <span id="alginateYieldValue">12</span>%
-                    </label>
-                    <input type="range" id="alginateYield" class="slider" min="5" max="25" step="0.5" value="12">
-                    <div class="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>5%</span>
-                        <span>25%</span>
-                    </div>
-                </div>
-                <div class="text-sm text-gray-600">
-                    Alginate output: <span id="alginateOutput">0.72</span> lbs
-                </div>
-            </div>
-
-            <!-- Ethanol Recovery -->
-            <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">🔄 Ethanol Recovery</h3>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Recovery Rate: <span id="ethanolRecoveryValue">0</span>%
-                    </label>
-                    <input type="range" id="ethanolRecovery" class="slider" min="0" max="95" step="5" value="0">
-                    <div class="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>0%</span>
-                        <span>95%</span>
-                    </div>
-                </div>
-                <div class="text-sm text-gray-600">
-                    Effective price: $<span id="effectiveEthanolPrice">71.98</span>/gal
-                </div>
-            </div>
-        </div>
-        
-      <!-- Blend Composition Sliders -->
-<div class="bg-white border-2 border-purple-300 rounded-lg p-6 mb-8">
-  <h3 class="text-lg font-semibold text-gray-900 mb-4">🧪 Blend Composition</h3>
-
-  <!-- Macroalgae Slider -->
-  <div class="mb-4">
-    <label class="block text-sm font-medium text-gray-700 mb-2">
-      % Macroalgae (Sodium Alginate): <span id="macroPct">20</span>%
-    </label>
-    <input type="range" id="macroSlider" class="slider" min="0" max="100" step="1" value="20">
-    <div class="flex justify-between text-xs text-gray-500 mt-1">
-      <span>0%</span>
-      <span>100%</span>
+  <div class="p-6 max-w-7xl mx-auto min-h-screen">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Dirigo Sea Farm Cost Analysis Dashboard</h1>
+      <p class="text-gray-600">Adjust the key levers to optimize COGs</p>
     </div>
-  </div>
 
-  <!-- Microalgae Display -->
-  <div class="mb-4 text-sm text-gray-600">
-    % Microalgae Polysaccharide: <span id="microPct">80</span>%
-  </div>
+    <!-- Top cost levers -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- Seaweed Price -->
+      <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">🌿 Seaweed Price</h3>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Price per Lb: $<span id="seaweedPriceValue">8.00</span>
+        </label>
+        <input type="range" id="seaweedPrice" class="slider" min="2" max="15" step="0.25" value="8">
+        <div class="flex justify-between text-xs text-gray-500 mt-1">
+          <span>$2.00</span><span>$15.00</span>
+        </div>
+      </div>
 
-  <!-- Blend Cost Display -->
-  <div class="text-sm mt-4 text-gray-800 bg-purple-50 p-4 rounded-lg border border-purple-200">
-    <p>
-      Target Resin Price: <strong>$<span id="blendTarget">2.75</span></strong>/lb → Max input blend cost: <strong>$<span id="maxInputCost">2.20</span></strong>/lb (with 20% yield loss)
-    </p>
-    <p class="mt-2">
-      Current Blend Cost: <strong>$<span id="currentBlendCost">3.00</span></strong>/lb
-    </p>
-    <p id="blendStatus" class="mt-2 font-semibold text-red-600">
-      ❌ Too expensive to break even.
-    </p>
-  </div>
-</div>
+      <!-- Alginate Yield -->
+      <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">⚗️ Alginate Yield</h3>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Yield: <span id="alginateYieldValue">12</span>%
+        </label>
+        <input type="range" id="alginateYield" class="slider" min="5" max="25" step="0.5" value="12">
+        <div class="flex justify-between text-xs text-gray-500 mt-1">
+          <span>5%</span><span>25%</span>
+        </div>
+      </div>
 
-        <!-- Key Metrics -->
-        <!-- Resin Price & Microalgae Blend -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-  <!-- Resin Price Slider -->
-  <div class="bg-green-50 border-2 border-green-200 rounded-lg p-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">🧪 Target Resin Price</h3>
-    <div class="mb-4">
+      <!-- Ethanol Recovery -->
+      <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">🔄 Ethanol Recovery</h3>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Recovery Rate: <span id="ethanolRecoveryValue">0</span>%
+        </label>
+        <input type="range" id="ethanolRecovery" class="slider" min="0" max="95" step="5" value="0">
+        <div class="flex justify-between text-xs text-gray-500 mt-1">
+          <span>0%</span><span>95%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sodium Alginate COG + Macroalgae Film COG -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <!-- Sodium Alginate COG (updated to $/lb) -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">💰 Sodium Alginate COG</h3>
+        <div class="text-3xl font-bold text-blue-600 mb-2">
+          $<span id="sodiumAlginateCost">115.64</span>/Lb
+        </div>
+        <div class="text-sm text-gray-600">
+          Baseline: $115.64/Lb | Target: $6.80/Lb (food-grade market price)
+        </div>
+      </div>
+
+      <!-- Macroalgae Film COG -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">🎮 Macroalgae Film COG</h3>
+        <div class="text-3xl font-bold text-green-600 mb-2">
+          $<span id="filmCost">46.54</span>/Lb
+        </div>
+        <div class="text-sm text-gray-600">
+          Baseline: $46.54/Lb | Target: $8.00/Lb
+        </div>
+      </div>
+    </div>
+
+    <!-- Blend Composition Group -->
+    <div class="bg-white border-2 border-purple-300 rounded-lg p-6 mb-8">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">🧪 Blend Composition</h3>
+
       <label class="block text-sm font-medium text-gray-700 mb-2">
-        Target Resin Price: $<span id="resinPriceValue">2.75</span>/lb
+        % Macroalgae (Sodium Alginate): <span id="macroPct">20</span>%
+      </label>
+      <input type="range" id="macroSlider" class="slider" min="0" max="100" step="1" value="20">
+      <div class="text-sm text-gray-600 mt-2">
+        % Microalgae Polysaccharide: <span id="microPct">80</span>%
+      </div>
+
+      <div class="text-sm mt-4 text-gray-800 bg-purple-50 p-4 rounded-lg border border-purple-200">
+        <p>
+          Target Resin Price: <strong>$<span id="blendTarget">2.75</span></strong>/lb → Max input blend cost: <strong>$<span id="maxInputCost">2.20</span></strong>/lb
+        </p>
+        <p class="mt-2">
+          Current Blend Cost: <strong>$<span id="currentBlendCost">3.00</span></strong>/lb
+        </p>
+        <p id="blendStatus" class="mt-2 font-semibold text-red-600">
+          ❌ Too expensive to break even.
+        </p>
+      </div>
+
+      <!-- Resin Target Slider -->
+      <label class="block text-sm font-medium text-gray-700 mt-4">
+        Target Resin Price: $<span id="resinPriceValue">2.75</span>
       </label>
       <input type="range" id="resinPrice" class="slider" min="0.50" max="10" step="0.05" value="2.75">
-      <div class="flex justify-between text-xs text-gray-500 mt-1">
-        <span>$0.50</span>
-        <span>$10.00</span>
-      </div>
-    </div>
-    <p class="text-sm text-gray-600">
-      Adjust this to simulate your target selling price for finished resin.
-    </p>
-  </div>
 
-  <!-- Microalgae Cost Slider -->
-  <div class="bg-green-50 border-2 border-green-200 rounded-lg p-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">🧬 Microalgae Cost</h3>
-    <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 mb-2">
-        Microalgae Cost: $<span id="microCostValue">1.00</span>/lb
+      <!-- Microalgae Cost Slider -->
+      <label class="block text-sm font-medium text-gray-700 mt-4">
+        Microalgae Cost: $<span id="microCostValue">1.00</span>
       </label>
       <input type="range" id="microCost" class="slider" min="0.10" max="10" step="0.05" value="1.00">
-      <div class="flex justify-between text-xs text-gray-500 mt-1">
-        <span>$0.10</span>
-        <span>$10.00</span>
-      </div>
     </div>
-    <p class="text-sm text-gray-600">
-      Lower costs unlock higher seaweed usage in your resin blend.
-    </p>
   </div>
-</div>
 
-</script>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">💰 Sodium Alginate Cost</h3>
-                <div class="text-3xl font-bold text-blue-600 mb-2">
-                    $<span id="sodiumAlginateCost">254.93</span>/Kg
-                </div>
-                <div class="flex items-center">
-                    <span id="alginateChange" class="text-sm font-medium text-red-600">
-                        0.0% vs baseline
-                    </span>
-                </div>
-                <div class="mt-2 text-sm text-gray-600">
-                    Baseline: $254.93/Kg | Target: $15.00/Kg (food-grade market price)
-                </div>
-            </div>
+  <script>
+    const baseEthanolPrice = 71.98;
+    const sodiumBicarbPrice = 1.00;
+    const sodiumBicarbQuantity = 1.98;
+    const ethanolQuantity = 0.462301;
+    const glycerolPrice = 1.03;
+    const glycerolUtilization = 0.6;
+    const seaweedQuantity = 6;
 
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">🎬 Film Production Cost</h3>
-                <div class="text-3xl font-bold text-green-600 mb-2">
-                    $<span id="filmCost">46.54</span>/Lb
-                </div>
-                <div class="flex items-center">
-                    <span id="filmChange" class="text-sm font-medium text-red-600">
-                        0.0% vs baseline
-                    </span>
-                </div>
-                <div class="mt-2 text-sm text-gray-600">
-                    Baseline: $46.54/Lb | Target: $8.00/Lb
-                </div>
-            </div>
-        </div>
+    function calculateCosts() {
+      const seaweedPrice = parseFloat(document.getElementById('seaweedPrice').value);
+      const alginateYield = parseFloat(document.getElementById('alginateYield').value);
+      const ethanolRecovery = parseFloat(document.getElementById('ethanolRecovery').value);
 
-        <!-- Summary Table -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Cost Analysis Summary</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Component</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Value</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Baseline</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr class="bg-yellow-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Seaweed Price ($/Lb)</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$<span id="tableSeaweedPrice">8.00</span></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$8.00</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><span id="seaweedChange">0.0%</span></td>
-                        </tr>
-                        <tr class="bg-yellow-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Alginate Yield (%)</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><span id="tableAlginateYield">12</span>%</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12%</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><span id="yieldChange">0.0%</span></td>
-                        </tr>
-                        <tr class="bg-yellow-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Ethanol Recovery (%)</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><span id="tableEthanolRecovery">0</span>%</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0%</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">+<span id="recoveryChange">0</span>%</td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Sodium Alginate ($/Kg)</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$<span id="tableSodiumAlginate">254.93</span></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$254.93</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><span id="tableAlginateChange">0.0%</span></td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Film Cost ($/Lb)</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$<span id="tableFilmCost">46.54</span></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$46.54</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><span id="tableFilmChange">0.0%</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+      const effectiveEthanolPrice = baseEthanolPrice * (1 - ethanolRecovery / 100);
+      const ethanolCost = ethanolQuantity * effectiveEthanolPrice;
+      const kelpCost = seaweedQuantity * seaweedPrice;
+      const sodiumBicarbCost = sodiumBicarbQuantity * sodiumBicarbPrice;
+      const alginateLbs = seaweedQuantity * (alginateYield / 100);
+      const totalRawMaterialCost = kelpCost + sodiumBicarbCost + ethanolCost;
+      const sodiumAlginatePerLb = totalRawMaterialCost / alginateLbs;
+      const sodiumAlginateForFilm = 0.4 * sodiumAlginatePerLb;
+      const glycerolCost = glycerolUtilization * glycerolPrice;
+      const filmCostPerLb = sodiumAlginateForFilm + glycerolCost;
 
-    <script>
-        // Base constants
-        const baseEthanolPrice = 71.98;
-        const sodiumBicarbPrice = 1.00;
-        const sodiumBicarbQuantity = 1.98;
-        const ethanolQuantity = 0.462301;
-        const glycerolPrice = 1.03;
-        const glycerolUtilization = 0.6;
+      document.getElementById('seaweedPriceValue').textContent = seaweedPrice.toFixed(2);
+      document.getElementById('ethanolRecoveryValue').textContent = ethanolRecovery;
+      document.getElementById('alginateYieldValue').textContent = alginateYield;
+      document.getElementById('sodiumAlginateCost').textContent = sodiumAlginatePerLb.toFixed(2);
+      document.getElementById('filmCost').textContent = filmCostPerLb.toFixed(2);
 
-      function calculateCosts() {
-    const seaweedPrice = parseFloat(document.getElementById('seaweedPrice').value);
-    const alginateYield = parseFloat(document.getElementById('alginateYield').value);
-    const ethanolRecovery = parseFloat(document.getElementById('ethanolRecovery').value);
-const seaweedQuantity = 6;
+      // update blend logic
+      const macroPct = parseFloat(document.getElementById('macroSlider').value);
+      const microPct = 100 - macroPct;
+      const resinTarget = parseFloat(document.getElementById('resinPrice').value);
+      const microCost = parseFloat(document.getElementById('microCost').value);
 
+      const maxInputCost = resinTarget * 0.8;
+      const blendCost = (macroPct / 100) * sodiumAlginatePerLb + (microPct / 100) * microCost;
 
+      document.getElementById('macroPct').textContent = macroPct;
+      document.getElementById('microPct').textContent = microPct;
+      document.getElementById('blendTarget').textContent = resinTarget.toFixed(2);
+      document.getElementById('maxInputCost').textContent = maxInputCost.toFixed(2);
+      document.getElementById('currentBlendCost').textContent = blendCost.toFixed(2);
+      document.getElementById('resinPriceValue').textContent = resinTarget.toFixed(2);
+      document.getElementById('microCostValue').textContent = microCost.toFixed(2);
 
-    document.getElementById('seaweedPriceValue').textContent = seaweedPrice.toFixed(2);
-    document.getElementById('alginateYieldValue').textContent = alginateYield;
-    document.getElementById('ethanolRecoveryValue').textContent = ethanolRecovery;
+      const blendStatus = document.getElementById('blendStatus');
+      blendStatus.textContent = (blendCost <= maxInputCost)
+        ? '✅ This blend meets your resin price target.'
+        : '❌ Too expensive to break even.';
+      blendStatus.className = 'mt-2 font-semibold ' + (blendCost <= maxInputCost ? 'text-green-700' : 'text-red-600');
+    }
 
-            // Calculate costs
-            const effectiveEthanolPrice = baseEthanolPrice * (1 - ethanolRecovery / 100);
-            const ethanolCost = ethanolQuantity * effectiveEthanolPrice;
-            const kelpCost = seaweedQuantity * seaweedPrice;
-            const sodiumBicarbCost = sodiumBicarbQuantity * sodiumBicarbPrice;
-            const alginateLbs = seaweedQuantity * (alginateYield / 100);
-            const totalRawMaterialCost = kelpCost + sodiumBicarbCost + ethanolCost;
-            const sodiumAlginatePerLb = totalRawMaterialCost / alginateLbs;
-            const sodiumAlginatePerKg = sodiumAlginatePerLb * 2.20462;
-            const glycerolCost = glycerolUtilization * glycerolPrice;
-            const sodiumAlginateForFilm = 0.4 * sodiumAlginatePerKg;
-            const filmCostPerKg = glycerolCost + sodiumAlginateForFilm;
-            const filmCostPerLb = filmCostPerKg / 2.20462;
+    document.querySelectorAll('input[type=range]').forEach(input => {
+      input.addEventListener('input', calculateCosts);
+    });
 
-            // Update displays
-            document.getElementById('effectiveEthanolPrice').textContent = effectiveEthanolPrice.toFixed(2);
-            document.getElementById('kelpCost').textContent = kelpCost.toFixed(2);
-            document.getElementById('alginateOutput').textContent = alginateLbs.toFixed(2);
-            document.getElementById('sodiumAlginateCost').textContent = sodiumAlginatePerKg.toFixed(2);
-            document.getElementById('filmCost').textContent = filmCostPerLb.toFixed(2);
-
-            // Calculate changes
-            const alginateChange = ((sodiumAlginatePerKg - 254.93) / 254.93 * 100);
-            const filmChange = ((filmCostPerLb - 46.54) / 46.54 * 100);
-            const seaweedChange = ((seaweedPrice - 8) / 8 * 100);
-            const yieldChange = ((alginateYield - 12) / 12 * 100);
-
-            // Update change displays
-            const alginateChangeEl = document.getElementById('alginateChange');
-            alginateChangeEl.textContent = (alginateChange > 0 ? '+' : '') + alginateChange.toFixed(1) + '% vs baseline';
-            alginateChangeEl.className = `text-sm font-medium ${alginateChange < 0 ? 'text-green-600' : 'text-red-600'}`;
-
-            const filmChangeEl = document.getElementById('filmChange');
-            filmChangeEl.textContent = (filmChange > 0 ? '+' : '') + filmChange.toFixed(1) + '% vs baseline';
-            filmChangeEl.className = `text-sm font-medium ${filmChange < 0 ? 'text-green-600' : 'text-red-600'}`;
-
-            // Update table
-            document.getElementById('tableSeaweedPrice').textContent = seaweedPrice.toFixed(2);
-            document.getElementById('tableAlginateYield').textContent = alginateYield;
-            document.getElementById('tableEthanolRecovery').textContent = ethanolRecovery;
-            document.getElementById('tableSodiumAlginate').textContent = sodiumAlginatePerKg.toFixed(2);
-            document.getElementById('tableFilmCost').textContent = filmCostPerLb.toFixed(2);
-            document.getElementById('seaweedChange').textContent = seaweedChange.toFixed(1) + '%';
-            document.getElementById('yieldChange').textContent = yieldChange.toFixed(1) + '%';
-            document.getElementById('recoveryChange').textContent = ethanolRecovery;
-            document.getElementById('tableAlginateChange').textContent = alginateChange.toFixed(1) + '%';
-            document.getElementById('tableFilmChange').textContent = filmChange.toFixed(1) + '%';
-        }
-
-        // Add event listeners
-        document.getElementById('seaweedPrice').addEventListener('input', calculateCosts);
-        document.getElementById('alginateYield').addEventListener('input', calculateCosts);
-        document.getElementById('ethanolRecovery').addEventListener('input', calculateCosts);
-        // Initial calculation
-        calculateCosts();
-        // === Blend Composition Logic ===
-const macroSlider = document.getElementById('macroSlider');
-const macroPctEl = document.getElementById('macroPct');
-const microPctEl = document.getElementById('microPct');
-const blendTargetEl = document.getElementById('blendTarget');
-const maxInputCostEl = document.getElementById('maxInputCost');
-const currentBlendCostEl = document.getElementById('currentBlendCost');
-const blendStatusEl = document.getElementById('blendStatus');
-
-function updateBlendComposition() {
-  const macroPct = parseFloat(macroSlider.value);
-  const microPct = 100 - macroPct;
-
-  const macroCost = 14.13;
-  const microCost = parseFloat(document.getElementById('microCost').value);
-  const resinTarget = parseFloat(document.getElementById('resinPrice').value);
-  const maxBlendCost = resinTarget * 0.8;
-
-  const blendCost = (macroPct / 100) * macroCost + (microPct / 100) * microCost;
-
-  macroPctEl.textContent = macroPct;
-  microPctEl.textContent = microPct;
-  blendTargetEl.textContent = resinTarget.toFixed(2);
-  maxInputCostEl.textContent = maxBlendCost.toFixed(2);
-  currentBlendCostEl.textContent = blendCost.toFixed(2);
-
-  if (blendCost <= maxBlendCost) {
-    blendStatusEl.textContent = '✅ This blend meets your resin price target.';
-    blendStatusEl.className = 'mt-2 font-semibold text-green-700';
-  } else {
-    blendStatusEl.textContent = '❌ Too expensive to break even.';
-    blendStatusEl.className = 'mt-2 font-semibold text-red-600';
-  }
-}
-
-macroSlider.addEventListener('input', updateBlendComposition);
-document.getElementById('microCost').addEventListener('input', updateBlendComposition);
-document.getElementById('resinPrice').addEventListener('input', updateBlendComposition);
-
-updateBlendComposition();
-
-
-    </script>
+    calculateCosts();
+  </script>
 </body>
 </html>
