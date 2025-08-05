@@ -8,6 +8,7 @@
 </head>
 <body class="bg-gray-100 p-6">
   <div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
     <header class="text-center">
       <h1 class="text-3xl font-bold">Dirigo Sea Farm Cost Dashboard</h1>
       <p class="text-gray-600">Adjust the levers below to simulate cost dynamics for Holdfast™ resin and film production</p>
@@ -65,113 +66,109 @@
         <p class="text-gray-500">(Before waste sales: $<span id="filmCostNoWaste">0.00</span>/lb)</p>
       </div>
 
-      <div class="bg-white p-6 rounded shadow md:col-span-2">
-        <h2 class="text-xl font-semibold mb-2">Blended Resin COG</h2>
-        <p>Target: <strong>$<span id="blendTarget">2.75</span></strong>/lb</p>
-        <p>Max Input COG (w/ 20% yield loss): <strong>$<span id="maxInputCost">2.20</span></strong>/lb</p>
-        <p>Current Blend COG: <strong>$<span id="currentBlendCost">0.00</span></strong>/lb</p>
-        <p id="blendStatus" class="mt-2 font-semibold text-red-600">❌ Too expensive to break even.</p>
+      <div class="bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-semibold">Biowaste Volume</h2>
+        <p class="text-2xl text-gray-800"><span id="wasteVolume">0.00</span> lbs</p>
       </div>
+
+      <div class="bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-semibold">Biowaste Revenue</h2>
+        <p class="text-2xl text-gray-800">$<span id="wasteRevenue">0.00</span></p>
+      </div>
+    </div>
+
+    <!-- Blended Resin Section -->
+    <div class="bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-semibold mb-2">Blended Resin COG</h2>
+      <p>Target: <strong>$<span id="blendTarget">2.75</span></strong>/lb</p>
+      <p>Max Input COG (w/ 20% yield loss): <strong>$<span id="maxInputCost">2.20</span></strong>/lb</p>
+      <p>Current Blend COG: <strong>$<span id="currentBlendCost">3.00</span></strong>/lb</p>
+      <p id="blendStatus" class="mt-2 font-semibold text-red-600">❌ Too expensive to break even.</p>
+    </div>
+
+    <!-- Static Breakeven Chart -->
+    <div class="bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-semibold mb-4">📈 Macro vs Micro Breakeven Chart</h2>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Supply-and-demand.svg/640px-Supply-and-demand.svg.png" class="w-full rounded" alt="Static Chart Placeholder" />
+      <p class="text-sm text-gray-500 mt-2">Replace this with your breakeven visualization once finalized.</p>
     </div>
   </div>
 
+  <!-- JavaScript Logic -->
   <script>
-    const ethanolBasePrice = 71.98;
-    const ethanolVolume = 0.462301; // gal
-    const sodiumBicarbCost = 1.00 * 1.98; // $1/lb × 1.98 lb
-    const glycerolCostPerKg = 1.03 * 0.6; // $1.03 × 0.6 kg
-    const filmKGtoLB = 1 / 2.20462;
+    const baseEthanolPrice = 71.98;
+    const ethanolQuantity = 0.462301;
+    const sodiumBicarbPrice = 1.00;
+    const sodiumBicarbQuantity = 1.98;
+    const glycerolPrice = 1.03;
+    const glycerolUsageKg = 0.6;
+    const alginateUsageKg = 0.4;
+    const seaweedQuantity = 6;
 
-    function calculateAll() {
-      const seaweedPrice = parseFloat(seaweedPriceSlider.value);
-      const yieldPct = parseFloat(alginateYieldSlider.value);
-      const ethanolRecovery = parseFloat(ethanolRecoverySlider.value);
-      const microCost = parseFloat(microCostSlider.value);
-      const resinPrice = parseFloat(resinPriceSlider.value);
-      const macroPct = parseFloat(macroSlider.value);
-      const wastePrice = parseFloat(wastePriceSlider.value);
+    function calculate() {
+      const seaweedPrice = parseFloat(document.getElementById('seaweedPrice').value);
+      const alginateYield = parseFloat(document.getElementById('alginateYield').value);
+      const ethanolRecovery = parseFloat(document.getElementById('ethanolRecovery').value);
+      const microCost = parseFloat(document.getElementById('microCost').value);
+      const resinTarget = parseFloat(document.getElementById('resinPrice').value);
+      const macroPct = parseFloat(document.getElementById('macroSlider').value);
+      const microPct = 100 - macroPct;
+      const wastePrice = parseFloat(document.getElementById('wastePrice').value);
 
-      // Update UI display
-      seaweedPriceValue.textContent = seaweedPrice.toFixed(2);
-      alginateYieldValue.textContent = yieldPct;
-      ethanolRecoveryValue.textContent = ethanolRecovery;
-      microCostValue.textContent = microCost.toFixed(2);
-      resinPriceValue.textContent = resinPrice.toFixed(2);
-      macroPctEl.textContent = macroPct;
-      microPctEl.textContent = (100 - macroPct);
-      wastePriceValue.textContent = wastePrice.toFixed(2);
+      document.getElementById('seaweedPriceValue').textContent = seaweedPrice.toFixed(2);
+      document.getElementById('alginateYieldValue').textContent = alginateYield;
+      document.getElementById('ethanolRecoveryValue').textContent = ethanolRecovery;
+      document.getElementById('microCostValue').textContent = microCost.toFixed(2);
+      document.getElementById('resinPriceValue').textContent = resinTarget.toFixed(2);
+      document.getElementById('macroPct').textContent = macroPct;
+      document.getElementById('microPct').textContent = microPct;
+      document.getElementById('wastePriceValue').textContent = wastePrice.toFixed(2);
 
-      // Alginate COG
-      const kelpLbs = 6;
-      const ethanolPrice = ethanolBasePrice * (1 - ethanolRecovery / 100);
-      const ethanolCost = ethanolPrice * ethanolVolume;
-      const alginateLbs = kelpLbs * (yieldPct / 100);
-      const totalAlginateCost = (seaweedPrice * kelpLbs) + sodiumBicarbCost + ethanolCost;
-      const alginateCostPerLb = totalAlginateCost / alginateLbs;
-      sodiumAlginateCost.textContent = alginateCostPerLb.toFixed(2);
+      const kelpCost = seaweedPrice * seaweedQuantity;
+      const effectiveEthanolPrice = baseEthanolPrice * (1 - ethanolRecovery / 100);
+      const ethanolCost = ethanolQuantity * effectiveEthanolPrice;
+      const sodiumBicarbCost = sodiumBicarbQuantity * sodiumBicarbPrice;
+      const alginateLbs = seaweedQuantity * (alginateYield / 100);
+      const sodiumAlginatePerLb = (kelpCost + sodiumBicarbCost + ethanolCost) / alginateLbs;
+      const sodiumAlginatePerKg = sodiumAlginatePerLb * 2.20462;
 
-      // Film COG - before and after biowaste credit
-      const sodiumAlginatePerKG = alginateCostPerLb * 2.20462;
-      const baseFilmCostPerKG = sodiumAlginatePerKG * 0.4 + glycerolCostPerKg;
-      const baseFilmCostPerLb = baseFilmCostPerKG * filmKGtoLB;
+      const glycerolCost = glycerolUsageKg * glycerolPrice;
+      const alginateCost = alginateUsageKg * sodiumAlginatePerKg;
+      const filmCostPerKg = glycerolCost + alginateCost;
+      const filmCostPerLb = filmCostPerKg / 2.20462;
 
-      const wasteLbs = kelpLbs - alginateLbs;
+      const wasteLbs = seaweedQuantity - alginateLbs;
       const wasteRevenue = wasteLbs * wastePrice;
-      const netFilmCost = (totalAlginateCost - wasteRevenue) + sodiumBicarbCost + ethanolCost + (glycerolCostPerKg * 2.20462);
+      const netFilmCostPerLb = (filmCostPerKg - (wasteRevenue / 2.20462)) / 2.20462;
 
-      filmCostNoWaste.textContent = baseFilmCostPerLb.toFixed(2);
-      filmCostWithWaste.textContent = (netFilmCost * filmKGtoLB).toFixed(2);
+      // Blended COG
+      const maxInputCost = resinTarget * 0.8;
+      const macroCost = filmCostPerLb;
+      const blendCost = (macroPct / 100) * macroCost + (microPct / 100) * microCost;
 
-      // Blended Resin COG
-      const blendCost = (macroPct / 100) * baseFilmCostPerLb + ((100 - macroPct) / 100) * microCost;
-      const maxInputCost = resinPrice * 0.8;
-
-      blendTarget.textContent = resinPrice.toFixed(2);
-      maxInputCostEl.textContent = maxInputCost.toFixed(2);
-      currentBlendCost.textContent = blendCost.toFixed(2);
-
-      if (blendCost <= maxInputCost) {
-        blendStatus.textContent = "✅ This blend meets your resin price target.";
-        blendStatus.className = "mt-2 font-semibold text-green-700";
-      } else {
-        blendStatus.textContent = "❌ Too expensive to break even.";
-        blendStatus.className = "mt-2 font-semibold text-red-600";
-      }
+      // Output
+      document.getElementById('sodiumAlginateCost').textContent = sodiumAlginatePerLb.toFixed(2);
+      document.getElementById('filmCostNoWaste').textContent = filmCostPerLb.toFixed(2);
+      document.getElementById('filmCostWithWaste').textContent = netFilmCostPerLb.toFixed(2);
+      document.getElementById('wasteVolume').textContent = wasteLbs.toFixed(2);
+      document.getElementById('wasteRevenue').textContent = wasteRevenue.toFixed(2);
+      document.getElementById('blendTarget').textContent = resinTarget.toFixed(2);
+      document.getElementById('maxInputCost').textContent = maxInputCost.toFixed(2);
+      document.getElementById('currentBlendCost').textContent = blendCost.toFixed(2);
+      document.getElementById('blendStatus').textContent = blendCost <= maxInputCost
+        ? '✅ This blend meets your resin price target.'
+        : '❌ Too expensive to break even.';
+      document.getElementById('blendStatus').className =
+        blendCost <= maxInputCost
+          ? 'mt-2 font-semibold text-green-700'
+          : 'mt-2 font-semibold text-red-600';
     }
 
-    // Bind sliders and elements
-    const seaweedPriceSlider = document.getElementById("seaweedPrice");
-    const alginateYieldSlider = document.getElementById("alginateYield");
-    const ethanolRecoverySlider = document.getElementById("ethanolRecovery");
-    const microCostSlider = document.getElementById("microCost");
-    const resinPriceSlider = document.getElementById("resinPrice");
-    const macroSlider = document.getElementById("macroSlider");
-    const wastePriceSlider = document.getElementById("wastePrice");
-
-    const seaweedPriceValue = document.getElementById("seaweedPriceValue");
-    const alginateYieldValue = document.getElementById("alginateYieldValue");
-    const ethanolRecoveryValue = document.getElementById("ethanolRecoveryValue");
-    const microCostValue = document.getElementById("microCostValue");
-    const resinPriceValue = document.getElementById("resinPriceValue");
-    const macroPctEl = document.getElementById("macroPct");
-    const microPctEl = document.getElementById("microPct");
-    const wastePriceValue = document.getElementById("wastePriceValue");
-
-    const sodiumAlginateCost = document.getElementById("sodiumAlginateCost");
-    const filmCostWithWaste = document.getElementById("filmCostWithWaste");
-    const filmCostNoWaste = document.getElementById("filmCostNoWaste");
-
-    const blendTarget = document.getElementById("blendTarget");
-    const maxInputCostEl = document.getElementById("maxInputCost");
-    const currentBlendCost = document.getElementById("currentBlendCost");
-    const blendStatus = document.getElementById("blendStatus");
-
-    // Event Listeners
-    [seaweedPriceSlider, alginateYieldSlider, ethanolRecoverySlider, microCostSlider, resinPriceSlider, macroSlider, wastePriceSlider].forEach(slider => {
-      slider.addEventListener("input", calculateAll);
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+      slider.addEventListener('input', calculate);
     });
 
-    window.addEventListener("DOMContentLoaded", calculateAll);
+    calculate();
   </script>
 </body>
 </html>
