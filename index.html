@@ -131,6 +131,21 @@
     </p>
   </div>
 </div>
+        
+<!-- Seaweed Quantity -->
+<div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
+  <h3 class="text-lg font-semibold text-gray-900 mb-4">🪴 Seaweed Quantity</h3>
+  <div class="mb-4">
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+      Quantity: <span id="seaweedQuantityValue">6</span> lbs
+    </label>
+    <input type="range" id="seaweedQuantity" class="slider" min="1" max="20" step="0.5" value="6">
+    <div class="flex justify-between text-xs text-gray-500 mt-1">
+      <span>1 lb</span>
+      <span>20 lbs</span>
+    </div>
+  </div>
+</div>
 
         <!-- Key Metrics -->
         <!-- Resin Price & Microalgae Blend -->
@@ -268,7 +283,10 @@
     const seaweedPrice = parseFloat(document.getElementById('seaweedPrice').value);
     const alginateYield = parseFloat(document.getElementById('alginateYield').value);
     const ethanolRecovery = parseFloat(document.getElementById('ethanolRecovery').value);
-    const seaweedQuantity = 6; //
+    const seaweedQuantity = parseFloat(document.getElementById('seaweedQuantity').value);
+document.getElementById('seaweedQuantityValue').textContent = seaweedQuantity;
+
+
 
     document.getElementById('seaweedPriceValue').textContent = seaweedPrice.toFixed(2);
     document.getElementById('alginateYieldValue').textContent = alginateYield;
@@ -367,8 +385,11 @@ function updateBlendComposition() {
 macroSlider.addEventListener('input', updateBlendComposition);
 document.getElementById('microCost').addEventListener('input', updateBlendComposition);
 document.getElementById('resinPrice').addEventListener('input', updateBlendComposition);
+document.getElementById('seaweedQuantity').addEventListener('input', calculateCosts);
+
 
 updateBlendComposition();
+
 
     </script>
 </body>
