@@ -97,24 +97,40 @@
             </div>
         </div>
         
-        <!-- Seaweed Quantity -->
-<div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">⚖️ Seaweed Quantity</h3>
-    <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-            Input: <span id="seaweedQuantityValue">6</span> lbs
-        </label>
-        <input type="range" id="seaweedQuantity" class="slider" min="1" max="20" step="0.5" value="6">
-        <div class="flex justify-between text-xs text-gray-500 mt-1">
-            <span>1 lb</span>
-            <span>20 lbs</span>
-        </div>
-    </div>
-    <div class="text-sm text-gray-600">
-        Impacts kelp cost and alginate yield output
-    </div>
-</div>
+      <!-- Blend Composition Sliders -->
+<div class="bg-white border-2 border-purple-300 rounded-lg p-6 mb-8">
+  <h3 class="text-lg font-semibold text-gray-900 mb-4">🧪 Blend Composition</h3>
 
+  <!-- Macroalgae Slider -->
+  <div class="mb-4">
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+      % Macroalgae (Sodium Alginate): <span id="macroPct">20</span>%
+    </label>
+    <input type="range" id="macroSlider" class="slider" min="0" max="100" step="1" value="20">
+    <div class="flex justify-between text-xs text-gray-500 mt-1">
+      <span>0%</span>
+      <span>100%</span>
+    </div>
+  </div>
+
+  <!-- Microalgae Display -->
+  <div class="mb-4 text-sm text-gray-600">
+    % Microalgae Polysaccharide: <span id="microPct">80</span>%
+  </div>
+
+  <!-- Blend Cost Display -->
+  <div class="text-sm mt-4 text-gray-800 bg-purple-50 p-4 rounded-lg border border-purple-200">
+    <p>
+      Target Resin Price: <strong>$<span id="blendTarget">2.75</span></strong>/lb → Max input blend cost: <strong>$<span id="maxInputCost">2.20</span></strong>/lb (with 20% yield loss)
+    </p>
+    <p class="mt-2">
+      Current Blend Cost: <strong>$<span id="currentBlendCost">3.00</span></strong>/lb
+    </p>
+    <p id="blendStatus" class="mt-2 font-semibold text-red-600">
+      ❌ Too expensive to break even.
+    </p>
+  </div>
+</div>
 
         <!-- Key Metrics -->
         <!-- Resin Price & Microalgae Blend -->
@@ -153,14 +169,6 @@
     <p class="text-sm text-gray-600">
       Lower costs unlock higher seaweed usage in your resin blend.
     </p>
-  </div>
-</div>
-
-<!-- Blend Ratio Output -->
-<div class="bg-white border border-green-200 rounded-lg p-6 mb-8">
-  <h3 class="text-lg font-semibold text-gray-900 mb-4">🥣 Required Blend Ratio</h3>
-  <div id="blendOutput" class="text-md text-gray-800">
-    <!-- JS will populate -->
   </div>
 </div>
 
@@ -363,6 +371,47 @@ const seaweedQuantity = parseFloat(document.getElementById('seaweedQuantity').va
 
         // Initial calculation
         calculateCosts();
+        // === Blend Composition Logic ===
+const macroSlider = document.getElementById('macroSlider');
+const macroPctEl = document.getElementById('macroPct');
+const microPctEl = document.getElementById('microPct');
+const blendTargetEl = document.getElementById('blendTarget');
+const maxInputCostEl = document.getElementById('maxInputCost');
+const currentBlendCostEl = document.getElementById('currentBlendCost');
+const blendStatusEl = document.getElementById('blendStatus');
+
+function updateBlendComposition() {
+  const macroPct = parseFloat(macroSlider.value);
+  const microPct = 100 - macroPct;
+
+  const macroCost = 14.13;
+  const microCost = parseFloat(document.getElementById('microCost').value);
+  const resinTarget = parseFloat(document.getElementById('resinPrice').value);
+  const maxBlendCost = resinTarget * 0.8;
+
+  const blendCost = (macroPct / 100) * macroCost + (microPct / 100) * microCost;
+
+  macroPctEl.textContent = macroPct;
+  microPctEl.textContent = microPct;
+  blendTargetEl.textContent = resinTarget.toFixed(2);
+  maxInputCostEl.textContent = maxBlendCost.toFixed(2);
+  currentBlendCostEl.textContent = blendCost.toFixed(2);
+
+  if (blendCost <= maxBlendCost) {
+    blendStatusEl.textContent = '✅ This blend meets your resin price target.';
+    blendStatusEl.className = 'mt-2 font-semibold text-green-700';
+  } else {
+    blendStatusEl.textContent = '❌ Too expensive to break even.';
+    blendStatusEl.className = 'mt-2 font-semibold text-red-600';
+  }
+}
+
+macroSlider.addEventListener('input', updateBlendComposition);
+document.getElementById('microCost').addEventListener('input', updateBlendComposition);
+document.getElementById('resinPrice').addEventListener('input', updateBlendComposition);
+
+updateBlendComposition();
+
     </script>
 </body>
 </html>
