@@ -20,33 +20,27 @@
         <label class="font-semibold">Seaweed Price ($/lb): <span id="seaweedPriceValue">8.00</span></label>
         <input type="range" id="seaweedPrice" min="2" max="15" step="0.25" value="8" class="w-full">
       </div>
-
       <div class="bg-white p-4 rounded shadow">
         <label class="font-semibold">Alginate Yield (%): <span id="alginateYieldValue">12</span></label>
         <input type="range" id="alginateYield" min="5" max="25" step="0.5" value="12" class="w-full">
       </div>
-
       <div class="bg-white p-4 rounded shadow">
         <label class="font-semibold">Ethanol Recovery (%): <span id="ethanolRecoveryValue">0</span></label>
         <input type="range" id="ethanolRecovery" min="0" max="95" step="5" value="0" class="w-full">
       </div>
-
       <div class="bg-white p-4 rounded shadow">
         <label class="font-semibold">Microalgae Cost ($/lb): <span id="microCostValue">1.00</span></label>
         <input type="range" id="microCost" min="0.1" max="10" step="0.05" value="1.00" class="w-full">
       </div>
-
       <div class="bg-white p-4 rounded shadow">
         <label class="font-semibold">Target Resin Price ($/lb): <span id="resinPriceValue">2.75</span></label>
         <input type="range" id="resinPrice" min="0.5" max="10" step="0.05" value="2.75" class="w-full">
       </div>
-
       <div class="bg-white p-4 rounded shadow">
         <label class="font-semibold">Macroalgae (%): <span id="macroPct">20</span>%</label>
         <input type="range" id="macroSlider" min="0" max="100" step="1" value="20" class="w-full">
         <p class="text-sm text-gray-600">Microalgae (%): <span id="microPct">80</span>%</p>
       </div>
-
       <div class="bg-white p-4 rounded shadow">
         <label class="font-semibold">Biowaste Sale Price ($/lb): <span id="wastePriceValue">0.00</span></label>
         <input type="range" id="wastePrice" min="0" max="20" step="0.25" value="0.00" class="w-full">
@@ -59,18 +53,15 @@
         <h2 class="text-xl font-semibold">Sodium Alginate COG</h2>
         <p class="text-3xl text-blue-600 font-bold">$<span id="sodiumAlginateCost">0.00</span>/lb</p>
       </div>
-
       <div class="bg-white p-6 rounded shadow">
         <h2 class="text-xl font-semibold">Macroalgae Film COG</h2>
         <p class="text-3xl text-green-600 font-bold">$<span id="filmCostWithWaste">0.00</span>/lb</p>
         <p class="text-gray-500">(Before waste sales: $<span id="filmCostNoWaste">0.00</span>/lb)</p>
       </div>
-
       <div class="bg-white p-6 rounded shadow">
         <h2 class="text-xl font-semibold">Biowaste Volume</h2>
         <p class="text-2xl text-gray-800"><span id="wasteVolume">0.00</span> lbs</p>
       </div>
-
       <div class="bg-white p-6 rounded shadow">
         <h2 class="text-xl font-semibold">Biowaste Revenue</h2>
         <p class="text-2xl text-gray-800">$<span id="wasteRevenue">0.00</span></p>
@@ -87,12 +78,14 @@
     </div>
 
     <!-- Breakeven Chart -->
-<div class="bg-white p-6 rounded shadow mt-8">
-  <h2 class="text-xl font-semibold mb-4">📉 Yield vs Net Value Breakeven</h2>
-  <canvas id="yieldChart" height="300"></canvas>
-</div>
+    <div class="bg-white p-6 rounded shadow mt-8">
+      <h2 class="text-xl font-semibold mb-4">📉 Yield vs Net Value Breakeven</h2>
+      <canvas id="yieldChart" height="300"></canvas>
+    </div>
+  </div>
 
-  <!-- JavaScript Logic -->
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const baseEthanolPrice = 71.98;
     const ethanolQuantity = 0.462301;
@@ -102,6 +95,7 @@
     const glycerolUsageKg = 0.6;
     const alginateUsageKg = 0.4;
     const seaweedQuantity = 6;
+    let yieldChart;
 
     function calculate() {
       const seaweedPrice = parseFloat(document.getElementById('seaweedPrice').value);
@@ -139,12 +133,9 @@
       const wasteRevenue = wasteLbs * wastePrice;
       const netFilmCostPerLb = (filmCostPerKg - (wasteRevenue / 2.20462)) / 2.20462;
 
-      // Blended COG
       const maxInputCost = resinTarget * 0.8;
-      const macroCost = filmCostPerLb;
-      const blendCost = (macroPct / 100) * macroCost + (microPct / 100) * microCost;
+      const blendCost = (macroPct / 100) * netFilmCostPerLb + (microPct / 100) * microCost;
 
-      // Output
       document.getElementById('sodiumAlginateCost').textContent = sodiumAlginatePerLb.toFixed(2);
       document.getElementById('filmCostNoWaste').textContent = filmCostPerLb.toFixed(2);
       document.getElementById('filmCostWithWaste').textContent = netFilmCostPerLb.toFixed(2);
@@ -160,85 +151,88 @@
         blendCost <= maxInputCost
           ? 'mt-2 font-semibold text-green-700'
           : 'mt-2 font-semibold text-red-600';
+
+      updateBreakevenChart();
+    }
+
+    function updateBreakevenChart() {
+      const yieldPoints = [5, 10, 12, 15, 17, 20, 25];
+      const seaweedPrice = parseFloat(document.getElementById('seaweedPrice').value);
+      const ethanolRecovery = parseFloat(document.getElementById('ethanolRecovery').value);
+      const microCost = parseFloat(document.getElementById('microCost').value);
+      const wastePrice = parseFloat(document.getElementById('wastePrice').value);
+
+      function macroCostAtYield(yieldPct) {
+        const kelpCost = seaweedPrice * seaweedQuantity;
+        const ethanolCost = baseEthanolPrice * ethanolQuantity * (1 - ethanolRecovery / 100);
+        const sodiumCost = sodiumBicarbPrice * sodiumBicarbQuantity;
+        const alginateLbs = seaweedQuantity * (yieldPct / 100);
+        const algCost = (kelpCost + sodiumCost + ethanolCost) / alginateLbs;
+        const algCostKg = algCost * 2.20462;
+        const glycerolCost = glycerolPrice * glycerolUsageKg;
+        const inputCost = glycerolCost + (algCostKg * alginateUsageKg);
+        const inputCostLb = inputCost / 2.20462;
+        const wasteLbs = seaweedQuantity - alginateLbs;
+        const wasteValue = wasteLbs * wastePrice;
+        return (inputCost - (wasteValue / 2.20462)) / 2.20462;
+      }
+
+      const macroPercents = [5, 10, 20, 40];
+      const datasets = macroPercents.map(pct => ({
+        label: `${pct}% Macro`,
+        data: yieldPoints.map(yieldVal => {
+          const macroCost = macroCostAtYield(yieldVal);
+          return ((pct / 100) * macroCost + ((100 - pct) / 100) * microCost).toFixed(2);
+        }),
+        borderColor: pct === 5 ? '#3b82f6' : pct === 10 ? '#10b981' : pct === 20 ? '#f59e0b' : '#ef4444',
+        fill: false,
+        tension: 0.3
+      }));
+
+      if (yieldChart) yieldChart.destroy();
+      const ctx = document.getElementById('yieldChart').getContext('2d');
+      yieldChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: yieldPoints,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          },
+          interaction: {
+            mode: 'nearest',
+            axis: 'x',
+            intersect: false
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Alginate Yield (%)'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Net Value per Lb Resin ($)'
+              }
+            }
+          }
+        }
+      });
     }
 
     document.querySelectorAll('input[type="range"]').forEach(slider => {
       slider.addEventListener('input', calculate);
     });
 
-    calculate();
+    window.addEventListener('load', calculate);
   </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const ctx = document.getElementById('yieldChart').getContext('2d');
-  const yieldChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: [5, 10, 12, 15, 17, 20, 25],
-      datasets: [
-        {
-          label: '5% Macro',
-          data: [2.12, 2.34, 2.45, 2.39, 2.28, 2.07, 1.75],
-          borderColor: '#3b82f6',
-          fill: false,
-          tension: 0.3
-        },
-        {
-          label: '10% Macro',
-          data: [2.18, 2.42, 2.54, 2.49, 2.40, 2.20, 1.90],
-          borderColor: '#10b981',
-          fill: false,
-          tension: 0.3
-        },
-        {
-          label: '20% Macro',
-          data: [2.28, 2.55, 2.69, 2.65, 2.56, 2.36, 2.06],
-          borderColor: '#f59e0b',
-          fill: false,
-          tension: 0.3
-        },
-        {
-          label: '40% Macro',
-          data: [2.48, 2.78, 2.93, 2.89, 2.80, 2.60, 2.30],
-          borderColor: '#ef4444',
-          fill: false,
-          tension: 0.3
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        title: {
-          display: false
-        },
-        tooltip: {
-          mode: 'index',
-          intersect: false
-        }
-      },
-      interaction: {
-        mode: 'nearest',
-        axis: 'x',
-        intersect: false
-      },
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Alginate Yield (%)'
-          }
-        },
-        y: {
-          title: {
-            display: true,
-            text: 'Net Value per Lb Resin ($)'
-          },
-          beginAtZero: false
-        }
-      }
-    }
-  });
-</script>
 </body>
 </html>
