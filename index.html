@@ -131,7 +131,10 @@
 
       const wasteLbs = seaweedQuantity - alginateLbs;
       const wasteRevenue = wasteLbs * wastePrice;
-      const netFilmCostPerLb = (filmCostPerKg - (wasteRevenue / 2.20462)) / 2.20462;
+      
+      // CORRECTED CALCULATION: Convert waste revenue to per-lb basis, then subtract from film cost per lb
+      const wasteRevenuePerLb = wasteRevenue / 2.20462; // Total waste revenue divided by kg-to-lb conversion to get $/lb of film
+      const netFilmCostPerLb = filmCostPerLb - wasteRevenuePerLb;
 
       const maxInputCost = resinTarget * 0.8;
       const blendCost = (macroPct / 100) * netFilmCostPerLb + (microPct / 100) * microCost;
@@ -174,7 +177,9 @@
         const inputCostLb = inputCost / 2.20462;
         const wasteLbs = seaweedQuantity - alginateLbs;
         const wasteValue = wasteLbs * wastePrice;
-        return (inputCost - (wasteValue / 2.20462)) / 2.20462;
+        // CORRECTED: Proper waste revenue calculation for chart
+        const wasteValuePerLb = wasteValue / 2.20462;
+        return inputCostLb - wasteValuePerLb;
       }
 
       const macroPercents = [5, 10, 20, 40];
