@@ -43,7 +43,7 @@
       </div>
       <div class="bg-white p-4 rounded shadow">
         <label class="font-semibold">Biowaste Sale Price ($/lb): <span id="wastePriceValue">0.00</span></label>
-        <input type="range" id="wastePrice" min="0" max="20" step="0.25" value="0.00" class="w-full">
+        <input type="range" id="wastePrice" min="0" max="20" step="0.25" value="7.50" class="w-full"> <p class="text-xs text-gray-500 mt-1">Expected range: $5-$10/lb</p>
       </div>
     </div>
 
@@ -77,12 +77,19 @@
       <p id="blendStatus" class="mt-2 font-semibold text-red-600">❌ Too expensive to break even.</p>
     </div>
 
-    <!-- Breakeven Chart -->
-    <div class="bg-white p-6 rounded shadow mt-8">
-      <h2 class="text-xl font-semibold mb-4">📉 Yield vs Net Value Breakeven</h2>
-      <canvas id="yieldChart" height="300"></canvas>
-    </div>
+  <!-- Optimization Charts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+  <div class="bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-semibold mb-4">🎯 Film Material: Optimal Yield at Different Biowaste Prices</h2>
+    <canvas id="filmChart" height="300"></canvas>
+    <p class="text-sm text-gray-600 mt-2">Shows how optimal yield changes from $5-$10/lb biowaste prices. Current setting highlighted.</p>
   </div>
+  <div class="bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-semibold mb-4">🎯 Blended Resin: Optimal Macro %</h2>
+    <canvas id="resinChart" height="300"></canvas>
+    <p class="text-sm text-gray-600 mt-2">Shows cost vs target price at different macro percentages</p>
+  </div>
+</div>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -95,7 +102,7 @@
     const glycerolUsageKg = 0.6;
     const alginateUsageKg = 0.4;
     const seaweedQuantity = 6;
-    let yieldChart;
+    let filmChart, resinChart;
 
     function calculate() {
       const seaweedPrice = parseFloat(document.getElementById('seaweedPrice').value);
@@ -155,7 +162,7 @@
           ? 'mt-2 font-semibold text-green-700'
           : 'mt-2 font-semibold text-red-600';
 
-      updateBreakevenChart();
+      updateOptimizationCharts();
     }
 
     function updateBreakevenChart() {
